@@ -31,7 +31,7 @@ Makefile*
 *build-*
 *.qm
 *.prl
-
+.qtc_clangd
 # QtCreator local machine specific files for imported projects
 *creator.user*
 
