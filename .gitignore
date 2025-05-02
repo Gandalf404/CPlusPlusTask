@@ -32,6 +32,9 @@ Makefile*
 *.qm
 *.prl
 .qtc_clangd
+.qmake.stash
+TestTask
+
 # QtCreator local machine specific files for imported projects
 *creator.user*
 

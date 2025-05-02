@@ -5,6 +5,7 @@
 #include "database/database.h"
 #include <QTimer>
 #include <QPoint>
+#include <QPainter>
 #include <QSqlQuery>
 #include <QDateTime>
 #include <QMessageBox>
@@ -24,6 +25,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+protected:
+    void paintEvent(QPaintEvent*) override;
+
 private slots:
     void pointStart();
 
@@ -38,6 +42,7 @@ private:
     Database db;
     QTimer* timer;
     QPoint point;
+    QPainter* painter;
     QSqlQuery query;
 };
 #endif // MAINWINDOW_H

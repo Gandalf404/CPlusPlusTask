@@ -19,23 +19,20 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete timer;
+    delete painter;
 }
 
-void MainWindow::insertAction(const QString& action)
+void MainWindow::paintEvent(QPaintEvent*)
 {
-    query = QSqlQuery();
-    query.prepare("INSERT INTO point_position (point_action, point_action_time) VALUES (?, ?)");
-    query.addBindValue(action);
-    query.addBindValue(QDateTime::currentDateTime());
-    if (!query.exec())
-    {
-        QMessageBox::critical(nullptr, "Ошибка", "Произошла ошибка во время добавления записи в таблицу");
-    }
+    painter = new QPainter(this);
+    painter->setPen(QPen(Qt::red, 10));
+    painter->setRenderHint(QPainter::Antialiasing, true);
+    painter->drawPoint(point);
 }
 
 void MainWindow::pointStart()
 {
-    timer->start(50);
+    timer->start(5000);
     insertAction("Start");
 }
 
@@ -47,12 +44,20 @@ void MainWindow::pointStop()
 
 void MainWindow::movePoint()
 {
-    point.setX(QRandomGenerator::global()->bounded(2000));
-    point.setY(QRandomGenerator::global()->bounded(2000));
-    if (point.x() <= 0 || point.x() >= width()) {
-        point.setX(-point.x());
-    }
-    if (point.y() <= 0 || point.y() >= height()) {
-        point.setY(-point.y());
+    point.setX(QRandomGenerator::global()->bounded(width() / 2, width()));
+    point.setY(QRandomGenerator::global()->bounded(height() / 2, height()));
+    update();
+}
+
+void MainWindow::insertAction(const QString& action)
+{
+    query = QSqlQuery();
+    query.prepare("INSERT INTO point_position (point_action, point_action_time) VALUES (?, ?)");
+    query.addBindValue(action);
+    query.addBindValue(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm"));
+    if (!query.exec())
+    {
+        QMessageBox::critical(nullptr, "Ошибка", "Произошла ошибка во время добавления записи в таблицу");
+        qDebug() << query.lastError().text();
     }
 }
